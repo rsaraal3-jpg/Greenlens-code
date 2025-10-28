@@ -1,0 +1,321 @@
+---
+
+## 🗂 Folder structure
+
+
+greenlens/
+└── src/
+    ├── App.tsx
+    ├── features/
+    │   ├── scanner/index.tsx
+    │   ├── carbon/index.tsx
+    │   ├── challenges/index.tsx
+    │   ├── water/index.tsx
+    │   ├── digitalTree/index.tsx
+    │   ├── farmSync/index.tsx
+    │   └── ecoAssistant/index.tsx
+
+
+---
+
+### ✅ *src/features/scanner/index.tsx*
+
+tsx
+import React, { useState } from "react";
+
+export default function AiProductScanner() {
+  const [image, setImage] = useState<File | null>(null);
+  const [result, setResult] = useState<string>("");
+
+  const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setImage(e.target.files[0]);
+      setResult("Scanning product...");
+      // Simulate AI scan delay
+      setTimeout(() => setResult("✅ Product is eco-friendly!"), 1500);
+    }
+  };
+
+  return (
+    <div style={styles.container}>
+      <h2>AI Product Scanner</h2>
+      <input type="file" accept="image/*" onChange={handleUpload} />
+      {image && <p>Uploaded: {image.name}</p>}
+      {result && <p>{result}</p>}
+    </div>
+  );
+}
+
+const styles: { [key: string]: React.CSSProperties } = {
+  container: {
+    textAlign: "center",
+    padding: "20px",
+  },
+};
+
+
+---
+
+### ✅ *src/features/carbon/index.tsx*
+
+tsx
+import React, { useState } from "react";
+
+export default function CarbonCalculator() {
+  const [carKm, setCarKm] = useState(0);
+  const [electricity, setElectricity] = useState(0);
+  const [meatServings, setMeatServings] = useState(0);
+  const [footprint, setFootprint] = useState<number | null>(null);
+
+  const CO2_FACTORS = { car: 0.21, electricity: 0.475, meat: 7.0 };
+
+  const calculateFootprint = () => {
+    const total =
+      carKm * CO2_FACTORS.car +
+      electricity * CO2_FACTORS.electricity +
+      meatServings * CO2_FACTORS.meat;
+    setFootprint(parseFloat(total.toFixed(2)));
+  };
+
+  return (
+    <div style={styles.container}>
+      <h2>Carbon Footprint Calculator</h2>
+
+      <div style={styles.inputGroup}>
+        <label>Car travel (km): </label>
+        <input
+          type="number"
+          value={carKm}
+          onChange={(e) => setCarKm(Number(e.target.value))}
+        />
+      </div>
+
+      <div style={styles.inputGroup}>
+        <label>Electricity (kWh): </label>
+        <input
+          type="number"
+          value={electricity}
+          onChange={(e) => setElectricity(Number(e.target.value))}
+        />
+      </div>
+
+      <div style={styles.inputGroup}>
+        <label>Meat servings/week: </label>
+        <input
+          type="number"
+          value={meatServings}
+          onChange={(e) => setMeatServings(Number(e.target.value))}
+        />
+      </div>
+
+      <button onClick={calculateFootprint} style={styles.button}>
+        Calculate
+      </button>
+
+      {footprint !== null && <p>Your weekly CO₂: {footprint} kg</p>}
+    </div>
+  );
+}
+
+const styles: { [key: string]: React.CSSProperties } = {
+  container: { textAlign: "center", padding: "20px" },
+  inputGroup: { margin: "10px 0" },
+  button: { marginTop: "15px", padding: "10px 20px" },
+};
+
+
+---
+
+### ✅ *src/features/challenges/index.tsx*
+
+tsx
+import React, { useState } from "react";
+
+const challengesList = [
+  "Use a reusable bottle",
+  "Turn off unused lights",
+  "Walk/Bike instead of driving",
+  "Recycle waste",
+];
+
+export default function EcoChallenges() {
+  const [completed, setCompleted] = useState<number[]>([]);
+
+  const toggleChallenge = (index: number) => {
+    setCompleted((prev) =>
+      prev.includes(index)
+        ? prev.filter((i) => i !== index)
+        : [...prev, index]
+    );
+  };
+
+  return (
+    <div style={{ textAlign: "center", padding: "20px" }}>
+      <h2>Eco Challenges</h2>
+      {challengesList.map((c, i) => (
+        <div
+          key={i}
+          onClick={() => toggleChallenge(i)}
+          style={{
+            margin: "10px auto",
+            padding: "10px",
+            maxWidth: "300px",
+            cursor: "pointer",
+            borderRadius: "8px",
+            backgroundColor: completed.includes(i) ? "#A5D6A7" : "#E8F5E9",
+          }}
+        >
+          {c} {completed.includes(i) ? "✅" : ""}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+
+---
+
+### ✅ *src/features/water/index.tsx*
+
+tsx
+import React, { useState } from "react";
+
+export default function WaterTracker() {
+  const [liters, setLiters] = useState(0);
+  const [tips, setTips] = useState<string>("");
+
+  const getTip = () => {
+    if (liters < 2)
+      setTips("💧 Drink more water and reduce wastage!");
+    else
+      setTips("🌿 Great! You're hydrated and eco-friendly!");
+  };
+
+  return (
+    <div style={{ textAlign: "center", padding: "20px" }}>
+      <h2>Water Tracker</h2>
+      <input
+        type="number"
+        placeholder="Liters used today"
+        value={liters}
+        onChange={(e) => setLiters(Number(e.target.value))}
+      />
+      <button onClick={getTip} style={{ marginLeft: "10px" }}>
+        Get Tip
+      </button>
+      {tips && <p>{tips}</p>}
+    </div>
+  );
+}
+
+
+---
+
+### ✅ *src/features/digitalTree/index.tsx*
+
+tsx
+import React, { useState } from "react";
+
+export default function DigitalTree() {
+  const [growth, setGrowth] = useState(0);
+
+  return (
+    <div style={{ textAlign: "center", padding: "20px" }}>
+      <h2>Digital Tree</h2>
+      <p>🌳 Tree growth: {growth}%</p>
+      <button onClick={() => setGrowth((g) => Math.min(g + 10, 100))}>
+        Complete Eco Action
+      </button>
+    </div>
+  );
+}
+
+
+---
+
+### ✅ *src/features/farmSync/index.tsx*
+
+tsx
+import React from "react";
+
+export default function FarmSync() {
+  return (
+    <div style={{ textAlign: "center", padding: "20px" }}>
+      <h2>Farm Sync</h2>
+      <p>Connect with local farms to support sustainable agriculture.</p>
+      <button>Find Nearby Farms</button>
+    </div>
+  );
+}
+
+
+---
+
+### ✅ *src/features/ecoAssistant/index.tsx*
+
+tsx
+import React, { useState } from "react";
+
+export default function EcoAiAssistant() {
+  const [query, setQuery] = useState("");
+  const [response, setResponse] = useState("");
+
+  const askAi = () => {
+    setResponse(
+      query
+        ? `💡 AI Tip: Consider eco-friendly choices for "${query}".`
+        : "Please ask me something!"
+    );
+  };
+
+  return (
+    <div style={{ textAlign: "center", padding: "20px" }}>
+      <h2>Eco AI Assistant</h2>
+      <input
+        type="text"
+        placeholder="Ask a question"
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+      />
+      <button onClick={askAi} style={{ marginLeft: "10px" }}>
+        Ask AI
+      </button>
+      {response && <p>{response}</p>}
+    </div>
+  );
+}
+
+
+---
+
+### ✅ *src/App.tsx*
+
+tsx
+import React from "react";
+import AiProductScanner from "./features/scanner";
+import CarbonCalculator from "./features/carbon";
+import EcoChallenges from "./features/challenges";
+import WaterTracker from "./features/water";
+import DigitalTree from "./features/digitalTree";
+import FarmSync from "./features/farmSync";
+import EcoAiAssistant from "./features/ecoAssistant";
+
+function App() {
+  return (
+    <div style={{ textAlign: "center", padding: "20px" }}>
+      <h1>🌎 GreenLens App</h1>
+      <AiProductScanner />
+      <CarbonCalculator />
+      <EcoChallenges />
+      <WaterTracker />
+      <DigitalTree />
+      <FarmSync />
+      <EcoAiAssistant />
+    </div>
+  );
+}
+
+export default App;
+
+
+--
